@@ -1,5 +1,10 @@
 require('@nomiclabs/hardhat-waffle')
 require('dotenv').config()
+require('@nomiclabs/hardhat-etherscan')
+require('./tasks/block-number')
+require('hardhat-gas-reporter')
+require('solidity-coverage')
+
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
@@ -17,8 +22,10 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL
-const PRIVATE_KEY = process.env.PRIVATE_KEY
+const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || 'http://localhost:8545'
+const PRIVATE_KEY = process.env.PRIVATE_KEY || '0x'
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ''
+const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ''
 
 module.exports = {
   solidity: '0.8.8',
@@ -29,5 +36,16 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 4
     }
+  },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY
+  },
+  gasReporter: {
+    enabled: true,
+    currency: 'USD',
+    outputFile: './gas-reporter-report.json',
+    noColors: true,
+    coinmarketcap: COINMARKETCAP_API_KEY,
+    token: 'matic'
   }
 }
